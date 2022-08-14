@@ -13,15 +13,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from django.contrib import admin
 from django.urls import path, include
-from .views import ProjectsAPIView, IssuesAPIView, CommentsAPIView, UsersAPIView
+from .views import LoginAPIView, SignUpAPIView, ProjectsAPIView, IssuesAPIView, CommentsAPIView, UsersAPIView, ProjectsDetailAPIView, IssuesDetailAPIView, UsersDetailAPIView, CommentsDetailAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
+
     path('api/projects/', ProjectsAPIView.as_view()),
-    path('api/issues/', IssuesAPIView.as_view()),
-    path('api/comments/', CommentsAPIView.as_view()),
-    path('api/users/', UsersAPIView.as_view())
+    path('api/projects/<int:project_id>/', ProjectsDetailAPIView.as_view()),
+
+    path('api/projects/<int:project_id>/users/', UsersAPIView.as_view()),
+    path('api/projects/<int:project_id>/users/<int:user_id>/', UsersDetailAPIView.as_view()),
+
+    path('api/projects/<int:project_id>/issues/', IssuesAPIView.as_view()),
+    path('api/projects/<int:project_id>/issues/<int:issue_id>/', IssuesDetailAPIView.as_view()),
+
+    path('api/projects/<int:project_id>/issues/<int:issue_id>/comments/', CommentsAPIView.as_view()),
+    path('api/projects/<int:project_id>/issues/<int:issue_id>/comments/<int:comment_id>/', CommentsDetailAPIView.as_view()),
+
+    path('api/signup', SignUpAPIView.as_view()),
+    path('api/login', LoginAPIView.as_view()),
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]
