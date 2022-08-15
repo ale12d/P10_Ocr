@@ -5,6 +5,7 @@ from issue_tracking.models import Contributor
 from rest_framework import exceptions
 from django.shortcuts import get_object_or_404, get_list_or_404
 
+
 class is_Contributor(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         method = request.method
@@ -17,6 +18,7 @@ class is_Contributor(permissions.BasePermission):
         else:
             return True
 
+
 class is_Author(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         method = request.method
@@ -28,6 +30,5 @@ class is_Author(permissions.BasePermission):
 
         elif method in ('GET', 'POST'):
             return True
-
         else:
             return False

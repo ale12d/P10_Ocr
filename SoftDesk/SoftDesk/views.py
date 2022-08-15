@@ -6,7 +6,8 @@ from SoftDesk.serializers import ProjectsSerializer, IssuesSerializer, CommentsS
 from django.contrib.auth import authenticate
 from django.urls import reverse
 from issue_tracking.models import Contributor, Project, Issue, Comment, User
-import requests, json
+import requests
+import json
 from rest_framework.permissions import AllowAny
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +16,7 @@ import jwt
 from rest_framework import generics
 from django.contrib.auth.signals import user_logged_in
 from rest_framework_simplejwt.tokens import AccessToken
+
 
 class ProjectsAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -33,15 +35,17 @@ class ProjectsAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             project = get_object_or_404(Project, id=serializer.data['id'])
-            contributor = Contributor(user_id=request.user,project_id=project, permission = 'author',role = 'admin')
+            contributor = Contributor(user_id=request.user, project_id=project, permission='author', role='admin')
             contributor.save()
 
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProjectsDetailAPIView(APIView):
     permission_classes = [IsAuthenticated, is_Contributor, is_Author]
+
     def get(self, request, project_id):
         self.check_object_permissions(request, project_id)
         project = get_object_or_404(Project, id=project_id)
@@ -185,21 +189,23 @@ class UsersDetailAPIView(APIView):
 class SignUpAPIView(APIView):
     permission_classes = [AllowAny]
 
-    def post(self,request):
+    def post(self, request):
         try:
-            obj =  UsersSerializer(data=request.data)
+            obj = UsersSerializer(data=request.data)
             if obj.is_valid():
-                user = User.objects.create_user(obj['email'].value, obj['first_name'].value, obj['last_name'].value, obj['password'].value)
+                User.objects.create_user(obj['email'].value,
+                                         obj['first_name'].value, obj['last_name'].value, obj['password'].value)
                 return Response({'Message': 'valid sign up'}, status=status.HTTP_200_OK)
-            return Response(obj.errors,status = status.HTTP_400_BAD_REQUEST)
+            return Response(obj.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            return Response({'Message':'Something Failed due to {}'.format(str(e))}, status = status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'Something Failed due to {}'.format(str(e))}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
 
-    def post(self,request):
+    def post(self, request):
         try:
             input_data = request.data
             email = input_data.get('email')

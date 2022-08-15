@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 
+
 class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None, is_admin=False, is_staff=False,
                     is_active=True):
@@ -48,6 +49,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = None
     first_name = models.CharField(max_length=255)
@@ -70,17 +72,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return self.admin
 
+
 class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
     author_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
 class Contributor(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     permission = models.CharField(max_length=255)
     role = models.CharField(max_length=255)
+
 
 class Issue(models.Model):
     title = models.CharField(max_length=255)
@@ -92,7 +97,8 @@ class Issue(models.Model):
     author_user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="author_user")
     assignee_user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assignee_user")
     created_time = models.DateTimeField(auto_now_add=True)
-                        
+
+
 class Comment(models.Model):
     description = models.CharField(max_length=255)
     author_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
