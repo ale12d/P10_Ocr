@@ -16,7 +16,7 @@ Including another URLconf
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from django.contrib import admin
 from django.urls import path, include
-from .views import LoginAPIView, SignUpAPIView, ProjectsAPIView, IssuesAPIView, CommentsAPIView, UsersAPIView, ProjectsDetailAPIView, IssuesDetailAPIView, UsersDetailAPIView, CommentsDetailAPIView
+from issue_tracking.views import LoginAPIView, SignUpAPIView, ProjectsAPIView, IssuesAPIView, CommentsAPIView, UsersAPIView, ProjectsDetailAPIView, IssuesDetailAPIView, UsersDetailAPIView, CommentsDetailAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
